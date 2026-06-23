@@ -1,0 +1,255 @@
+{
+  "common": {
+    "appName": "PictaVoz",
+    "tagline": "Comunicación visual para todos",
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "search": "Buscar pictograma...",
+    "noResults": "No se encontraron pictogramas",
+    "fullscreen": "Pantalla completa",
+    "exitFullscreen": "Salir de pantalla completa",
+    "logout": "Cerrar sesión"
+  },
+  "dialog": {
+    "confirm": "Confirmar",
+    "ok": "Aceptar"
+  },
+  "nav": {
+    "communicate": "Comunicar",
+    "pictograms": "Mi tablero",
+    "create": "Crear",
+    "admin": "Admin"
+  },
+  "auth": {
+    "loginTitle": "Iniciar sesión",
+    "registerTitle": "Crear cuenta",
+    "email": "Email",
+    "password": "Contraseña",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "fullName": "Nombre completo",
+    "fullNamePlaceholder": "Tu nombre",
+    "emailPlaceholder": "tu@email.com",
+    "passwordPlaceholder": "Mínimo 6 caracteres",
+    "loginButton": "Iniciar sesión",
+    "registerButton": "Crear cuenta",
+    "noAccount": "¿No tenés cuenta?",
+    "hasAccount": "¿Ya tenés cuenta?",
+    "goRegister": "Registrate",
+    "goLogin": "Iniciá sesión",
+    "authError": "Error de autenticación",
+    "registerSuccess": "¡Cuenta creada! Revisá tu email para el mensaje de bienvenida.",
+    "invalidCredentials": "Email o contraseña incorrectos",
+    "emailTaken": "Este email ya está registrado",
+    "language": "Idioma"
+  },
+  "landing": {
+    "badge": "Comunicación aumentativa y alternativa",
+    "heroTitle": "Comunicá con pictogramas, a tu manera",
+    "heroSubtitle": "PictaVoz ayuda a armar oraciones visuales, escucharlas en voz alta y personalizar tableros para cada persona. Simple, accesible y en español e inglés.",
+    "heroNote": "Gratis para empezar · Sin tarjeta de crédito",
+    "ctaPrimary": "Crear cuenta gratis",
+    "ctaSecondary": "Ya tengo cuenta",
+    "previewLabel": "Vista previa",
+    "previewSentence": "Quiero · leche · casa",
+    "previewVoice": "Leer en voz alta",
+    "featuresTitle": "Todo lo que necesitás para comunicarte",
+    "featuresSubtitle": "Diseñado para familias, docentes y terapeutas que buscan una herramienta clara y amigable.",
+    "features": {
+      "communicate": {
+        "title": "Armá oraciones",
+        "description": "Tocá pictogramas para construir frases y escuchalas con un solo botón."
+      },
+      "boards": {
+        "title": "Tableros personalizados",
+        "description": "Editá, ocultá o agregá pictogramas. Creá varios tableros según el contexto."
+      },
+      "voice": {
+        "title": "Voz integrada",
+        "description": "Cada pictograma se lee en voz alta para reforzar la comunicación."
+      },
+      "share": {
+        "title": "Compartí tableros",
+        "description": "Enviá un enlace para que otra persona copie tu tablero a su cuenta."
+      }
+    },
+    "createTitle": "Creá pictogramas propios",
+    "createDescription": "Subí fotos de objetos, lugares o personas del entorno real. Así la comunicación refleja el mundo de quien la usa.",
+    "createPoint1": "Fotos desde la cámara o la galería",
+    "createPoint2": "Nombre en español e inglés",
+    "createPoint3": "Organizados por categorías",
+    "createCardTitle": "Tu mundo, tus pictos",
+    "createCardText": "Los pictogramas personalizados conviven con un catálogo completo listo para usar desde el primer día.",
+    "stepsTitle": "Empezá en tres pasos",
+    "stepsSubtitle": "En minutos ya podés comunicarte con PictaVoz.",
+    "steps": {
+      "one": {
+        "title": "Creá tu cuenta",
+        "text": "Registrate gratis con email y contraseña."
+      },
+      "two": {
+        "title": "Elegí pictogramas",
+        "text": "Tocá los pictos para armar tu oración en la pantalla Comunicar."
+      },
+      "three": {
+        "title": "Personalizá",
+        "text": "Adaptá tableros, creá pictos propios y compartilos con quien quieras."
+      }
+    },
+    "ctaTitle": "Empezá a comunicarte hoy",
+    "ctaDescription": "Unite a PictaVoz y descubrí una forma clara, visual y humana de expresarse.",
+    "footer": "© PictaVoz · Comunicación visual para todos"
+  },
+  "communicate": {
+    "title": "Comunicar",
+    "mySentence": "Mi oración",
+    "readAll": "Leer todo",
+    "reading": "Leyendo...",
+    "clear": "Limpiar",
+    "emptySentence": "Tocá pictogramas abajo para armar tu oración",
+    "removePictogram": "Quitar {name}"
+  },
+  "pictograms": {
+    "title": "Pictogramas"
+  },
+  "board": {
+    "title": "Mi tablero",
+    "pageSubtitle": "Personalizá los pictogramas que usás para comunicarte.",
+    "usingDefault": "Estás usando el tablero por defecto",
+    "defaultHint": "Al editar, ocultar o crear un pictograma se creará tu tablero personal (copia del default + tus cambios).",
+    "personalActive": "Tablero personal activo",
+    "personalHint": "Los cambios solo te afectan a vos. Podés tener varios tableros y cambiar entre ellos.",
+    "selectBoard": "Tablero activo",
+    "activeBoard": "activo",
+    "newBoard": "Nuevo tablero",
+    "newBoardPrompt": "Nombre del tablero (opcional)",
+    "createBoardError": "No se pudo crear el tablero",
+    "switchError": "No se pudo cambiar de tablero",
+    "maxBoardsReached": "Alcanzaste el límite de tableros permitidos",
+    "boardLimit": "{count} de {max} tableros",
+    "resetBoard": "Eliminar tablero activo",
+    "resetConfirm": "¿Eliminar el tablero activo? Se perderán sus cambios y pictogramas personalizados.",
+    "resetError": "No se pudo restablecer el tablero",
+    "allCategories": "Todas las categorías",
+    "hiddenSection": "Ocultos ({count})",
+    "editTitle": "Editar pictograma",
+    "edit": "Editar",
+    "hide": "Ocultar",
+    "restore": "Mostrar",
+    "hiddenBadge": "Oculto",
+    "delete": "Eliminar",
+    "nameEs": "Nombre (español)",
+    "nameEn": "Nombre (inglés)",
+    "emoji": "Emoji",
+    "category": "Categoría",
+    "uploadImage": "Subir imagen",
+    "useEmoji": "Usar emoji",
+    "fillRequired": "Completá nombre y categoría",
+    "updateError": "No se pudo guardar",
+    "deleteError": "No se pudo eliminar",
+    "deleteConfirm": "¿Eliminar \"{name}\" permanentemente?",
+    "shareBoard": "Compartir tablero",
+    "shareCopied": "Enlace copiado",
+    "shareError": "No se pudo generar el enlace"
+  },
+  "share": {
+    "title": "Tablero compartido",
+    "subtitle": "Alguien te compartió un tablero de pictogramas.",
+    "boardLabel": "Tablero",
+    "sharedBy": "Compartido por {name}",
+    "visiblePictograms": "Pictogramas visibles",
+    "customPictograms": "Personalizados",
+    "loginRequired": "Creá una cuenta o iniciá sesión para copiar este tablero a tu perfil.",
+    "importButton": "Copiar a mi cuenta",
+    "importSuccess": "¡Tablero copiado! Ya podés usarlo desde Mi tablero.",
+    "goToBoards": "Ir a Mi tablero",
+    "importError": "No se pudo copiar el tablero",
+    "loadError": "No se pudo cargar el tablero compartido",
+    "notFound": "Este enlace no es válido o el tablero ya no existe",
+    "ownBoard": "Este es tu propio tablero",
+    "maxBoardsReached": "Ya tenés el máximo de {max} tableros. Eliminá uno para poder copiar este.",
+    "copyLink": "Copiar enlace",
+    "linkCopied": "Enlace copiado"
+  },
+  "create": {
+    "title": "Crear pictograma",
+    "formTitle": "Crear nuevo pictograma",
+    "takePhoto": "Sacar foto",
+    "uploadPhoto": "Subir foto",
+    "nameLabel": "Nombre del pictograma",
+    "namePlaceholder": "Ej: Mi juguete favorito",
+    "categoryLabel": "Categoría",
+    "preview": "Vista previa",
+    "saving": "Guardando...",
+    "saveButton": "Guardar pictograma",
+    "fillAllFields": "Completá todos los campos y seleccioná una imagen",
+    "forkNotice": "Al guardar se creará tu tablero personal si aún no tenés uno."
+  },
+  "admin": {
+    "title": "Panel de administración",
+    "subtitle": "Gestioná pictogramas del sistema y usuarios registrados.",
+    "usersTitle": "Usuarios",
+    "roleUpdated": "Rol actualizado correctamente",
+    "updateError": "Error al actualizar",
+    "tabs": {
+      "users": "Usuarios",
+      "pictograms": "Pictogramas del sistema",
+      "settings": "Configuración"
+    },
+    "roles": {
+      "admin": "Administrador",
+      "user": "Usuario"
+    },
+    "pictograms": {
+      "title": "Pictogramas por defecto",
+      "subtitle": "Editá nombre, categoría, emoji o imagen. Los cambios se aplican para todos los usuarios.",
+      "allCategories": "Todas las categorías",
+      "count": "{count} pictogramas",
+      "editTitle": "Editar pictograma",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "nameEs": "Nombre (español)",
+      "nameEn": "Nombre (inglés)",
+      "emoji": "Emoji",
+      "category": "Categoría",
+      "uploadImage": "Subir imagen",
+      "useEmoji": "Usar emoji",
+      "fillRequired": "Completá nombre y categoría",
+      "updateError": "No se pudo guardar el pictograma",
+      "deleteError": "No se pudo eliminar el pictograma",
+      "deleteConfirm": "¿Eliminar \"{name}\"? Esta acción no se puede deshacer.",
+      "columns": {
+        "image": "Imagen",
+        "name": "Nombre",
+        "category": "Categoría",
+        "actions": "Acciones"
+      }
+    },
+    "settings": {
+      "title": "Configuración",
+      "subtitle": "Parámetros globales de la aplicación.",
+      "maxBoardsLabel": "Tableros por usuario",
+      "maxBoardsHint": "Cantidad máxima de tableros personalizados que puede crear cada usuario (1–50).",
+      "saveSuccess": "Configuración guardada",
+      "saveError": "No se pudo guardar la configuración"
+    }
+  },
+  "categories": {
+    "alimentos": "Alimentos",
+    "bebidas": "Bebidas",
+    "objetos": "Objetos",
+    "electrodomesticos": "Electrodomésticos",
+    "juegos": "Juegos y ocio",
+    "exterior": "Exterior",
+    "lugares": "Lugares",
+    "personas": "Personas",
+    "acciones": "Acciones",
+    "emociones": "Emociones",
+    "animales": "Animales",
+    "necesidades": "Necesidades",
+    "tiempo": "Tiempo",
+    "colores": "Colores",
+    "transporte": "Transporte"
+  }
+}

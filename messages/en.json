@@ -1,0 +1,255 @@
+{
+  "common": {
+    "appName": "PictaVoz",
+    "tagline": "Visual communication for everyone",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "search": "Search pictogram...",
+    "noResults": "No pictograms found",
+    "fullscreen": "Full screen",
+    "exitFullscreen": "Exit full screen",
+    "logout": "Log out"
+  },
+  "dialog": {
+    "confirm": "Confirm",
+    "ok": "OK"
+  },
+  "nav": {
+    "communicate": "Communicate",
+    "pictograms": "My board",
+    "create": "Create",
+    "admin": "Admin"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "registerTitle": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "fullName": "Full name",
+    "fullNamePlaceholder": "Your name",
+    "emailPlaceholder": "you@email.com",
+    "passwordPlaceholder": "At least 6 characters",
+    "loginButton": "Log in",
+    "registerButton": "Create account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "goRegister": "Sign up",
+    "goLogin": "Log in",
+    "authError": "Authentication error",
+    "registerSuccess": "Account created! Check your email for a welcome message.",
+    "invalidCredentials": "Invalid email or password",
+    "emailTaken": "This email is already registered",
+    "language": "Language"
+  },
+  "landing": {
+    "badge": "Augmentative and alternative communication",
+    "heroTitle": "Communicate with pictograms, your way",
+    "heroSubtitle": "PictaVoz helps you build visual sentences, hear them aloud, and customize boards for each person. Simple, accessible, and available in Spanish and English.",
+    "heroNote": "Free to start · No credit card required",
+    "ctaPrimary": "Create free account",
+    "ctaSecondary": "I already have an account",
+    "previewLabel": "Preview",
+    "previewSentence": "I want · milk · home",
+    "previewVoice": "Read aloud",
+    "featuresTitle": "Everything you need to communicate",
+    "featuresSubtitle": "Built for families, teachers, and therapists who want a clear, friendly tool.",
+    "features": {
+      "communicate": {
+        "title": "Build sentences",
+        "description": "Tap pictograms to build phrases and listen with one button."
+      },
+      "boards": {
+        "title": "Custom boards",
+        "description": "Edit, hide, or add pictograms. Create multiple boards for different contexts."
+      },
+      "voice": {
+        "title": "Built-in voice",
+        "description": "Each pictogram is read aloud to reinforce communication."
+      },
+      "share": {
+        "title": "Share boards",
+        "description": "Send a link so someone else can copy your board to their account."
+      }
+    },
+    "createTitle": "Create your own pictograms",
+    "createDescription": "Upload photos of real objects, places, or people. Communication reflects the world of the person using it.",
+    "createPoint1": "Photos from camera or gallery",
+    "createPoint2": "Names in Spanish and English",
+    "createPoint3": "Organized by categories",
+    "createCardTitle": "Your world, your pictos",
+    "createCardText": "Custom pictograms live alongside a full catalog ready to use from day one.",
+    "stepsTitle": "Get started in three steps",
+    "stepsSubtitle": "You can communicate with PictaVoz in minutes.",
+    "steps": {
+      "one": {
+        "title": "Create your account",
+        "text": "Sign up free with email and password."
+      },
+      "two": {
+        "title": "Choose pictograms",
+        "text": "Tap pictos to build your sentence on the Communicate screen."
+      },
+      "three": {
+        "title": "Customize",
+        "text": "Adapt boards, create your own pictos, and share them with others."
+      }
+    },
+    "ctaTitle": "Start communicating today",
+    "ctaDescription": "Join PictaVoz and discover a clear, visual, human way to express yourself.",
+    "footer": "© PictaVoz · Visual communication for everyone"
+  },
+  "communicate": {
+    "title": "Communicate",
+    "mySentence": "My sentence",
+    "readAll": "Read all",
+    "reading": "Reading...",
+    "clear": "Clear",
+    "emptySentence": "Tap pictograms below to build your sentence",
+    "removePictogram": "Remove {name}"
+  },
+  "pictograms": {
+    "title": "Pictograms"
+  },
+  "board": {
+    "title": "My board",
+    "pageSubtitle": "Customize the pictograms you use to communicate.",
+    "usingDefault": "You are using the default board",
+    "defaultHint": "When you edit, hide, or create a pictogram, your personal board will be created (a copy of the default plus your changes).",
+    "personalActive": "Personal board active",
+    "personalHint": "Changes only affect you. You can have multiple boards and switch between them.",
+    "selectBoard": "Active board",
+    "activeBoard": "active",
+    "newBoard": "New board",
+    "newBoardPrompt": "Board name (optional)",
+    "createBoardError": "Could not create board",
+    "switchError": "Could not switch board",
+    "maxBoardsReached": "You reached the maximum number of boards allowed",
+    "boardLimit": "{count} of {max} boards",
+    "resetBoard": "Delete active board",
+    "resetConfirm": "Delete the active board? Its changes and custom pictograms will be lost.",
+    "resetError": "Could not reset board",
+    "allCategories": "All categories",
+    "hiddenSection": "Hidden ({count})",
+    "editTitle": "Edit pictogram",
+    "edit": "Edit",
+    "hide": "Hide",
+    "restore": "Show again",
+    "hiddenBadge": "Hidden",
+    "delete": "Delete",
+    "nameEs": "Name (Spanish)",
+    "nameEn": "Name (English)",
+    "emoji": "Emoji",
+    "category": "Category",
+    "uploadImage": "Upload image",
+    "useEmoji": "Use emoji",
+    "fillRequired": "Fill in name and category",
+    "updateError": "Could not save",
+    "deleteError": "Could not delete",
+    "deleteConfirm": "Delete \"{name}\" permanently?",
+    "shareBoard": "Share board",
+    "shareCopied": "Link copied",
+    "shareError": "Could not generate share link"
+  },
+  "share": {
+    "title": "Shared board",
+    "subtitle": "Someone shared a pictogram board with you.",
+    "boardLabel": "Board",
+    "sharedBy": "Shared by {name}",
+    "visiblePictograms": "Visible pictograms",
+    "customPictograms": "Custom",
+    "loginRequired": "Create an account or log in to copy this board to your profile.",
+    "importButton": "Copy to my account",
+    "importSuccess": "Board copied! You can use it from My board.",
+    "goToBoards": "Go to My board",
+    "importError": "Could not copy board",
+    "loadError": "Could not load shared board",
+    "notFound": "This link is invalid or the board no longer exists",
+    "ownBoard": "This is your own board",
+    "maxBoardsReached": "You already have the maximum of {max} boards. Delete one to copy this board.",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied"
+  },
+  "create": {
+    "title": "Create pictogram",
+    "formTitle": "Create new pictogram",
+    "takePhoto": "Take photo",
+    "uploadPhoto": "Upload photo",
+    "nameLabel": "Pictogram name",
+    "namePlaceholder": "E.g.: My favorite toy",
+    "categoryLabel": "Category",
+    "preview": "Preview",
+    "saving": "Saving...",
+    "saveButton": "Save pictogram",
+    "fillAllFields": "Fill in all fields and select an image",
+    "forkNotice": "Saving will create your personal board if you don't have one yet."
+  },
+  "admin": {
+    "title": "Admin panel",
+    "subtitle": "Manage system pictograms and registered users.",
+    "usersTitle": "Users",
+    "roleUpdated": "Role updated successfully",
+    "updateError": "Error updating",
+    "tabs": {
+      "users": "Users",
+      "pictograms": "System pictograms",
+      "settings": "Settings"
+    },
+    "roles": {
+      "admin": "Administrator",
+      "user": "User"
+    },
+    "pictograms": {
+      "title": "Default pictograms",
+      "subtitle": "Edit name, category, emoji, or image. Changes apply for all users.",
+      "allCategories": "All categories",
+      "count": "{count} pictograms",
+      "editTitle": "Edit pictogram",
+      "edit": "Edit",
+      "delete": "Delete",
+      "nameEs": "Name (Spanish)",
+      "nameEn": "Name (English)",
+      "emoji": "Emoji",
+      "category": "Category",
+      "uploadImage": "Upload image",
+      "useEmoji": "Use emoji",
+      "fillRequired": "Fill in name and category",
+      "updateError": "Could not save pictogram",
+      "deleteError": "Could not delete pictogram",
+      "deleteConfirm": "Delete \"{name}\"? This cannot be undone.",
+      "columns": {
+        "image": "Image",
+        "name": "Name",
+        "category": "Category",
+        "actions": "Actions"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Global application parameters.",
+      "maxBoardsLabel": "Boards per user",
+      "maxBoardsHint": "Maximum number of personal boards each user can create (1–50).",
+      "saveSuccess": "Settings saved",
+      "saveError": "Could not save settings"
+    }
+  },
+  "categories": {
+    "alimentos": "Food",
+    "bebidas": "Drinks",
+    "objetos": "Objects",
+    "electrodomesticos": "Appliances",
+    "juegos": "Games & leisure",
+    "exterior": "Outdoors",
+    "lugares": "Places",
+    "personas": "People",
+    "acciones": "Actions",
+    "emociones": "Emotions",
+    "animales": "Animals",
+    "necesidades": "Needs",
+    "tiempo": "Time",
+    "colores": "Colors",
+    "transporte": "Transport"
+  }
+}
