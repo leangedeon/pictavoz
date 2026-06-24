@@ -122,6 +122,7 @@
     "personalActive": "Personal board active",
     "personalHint": "Changes only affect you. You can have multiple boards and switch between them.",
     "selectBoard": "Active board",
+    "defaultBoard": "Default board",
     "activeBoard": "active",
     "newBoard": "New board",
     "newBoardPrompt": "Board name (optional)",

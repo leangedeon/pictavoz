@@ -8,7 +8,9 @@ import {
   resetBoard,
   resetPersonalBoard,
   setActiveBoard,
+  setDefaultBoard,
 } from "@/lib/user-board";
+import { DEFAULT_BOARD_ID } from "@/lib/board-constants";
 
 export async function GET() {
   const session = await getSession();
@@ -52,7 +54,13 @@ export async function POST(request: Request) {
       if (!boardId) {
         return NextResponse.json({ error: "boardId required" }, { status: 400 });
       }
-      await setActiveBoard(db, session.userId, boardId);
+
+      if (boardId === DEFAULT_BOARD_ID) {
+        await setDefaultBoard(db, session.userId);
+      } else {
+        await setActiveBoard(db, session.userId, boardId);
+      }
+
       const status = await getBoardStatus(db, session.userId);
       return NextResponse.json(status);
     }

@@ -83,10 +83,7 @@ export async function getActiveBoard(
     .eq("is_active", true)
     .maybeSingle();
 
-  if (data) return data;
-
-  const boards = await getUserBoards(db, userId);
-  return boards[0] ?? null;
+  return data ?? null;
 }
 
 export async function hasPersonalBoard(
@@ -106,6 +103,10 @@ async function deactivateUserBoards(db: Db, userId: string): Promise<void> {
     .from(TABLES.userBoards)
     .update({ is_active: false })
     .eq("user_id", userId);
+}
+
+export async function setDefaultBoard(db: Db, userId: string): Promise<void> {
+  await deactivateUserBoards(db, userId);
 }
 
 export async function setActiveBoard(
@@ -307,12 +308,13 @@ export async function getBoardStatus(db: Db, userId: string) {
       .eq("is_system", true);
 
     return {
-      hasPersonalBoard: false,
-      boards: [] as UserBoardRow[],
+      hasPersonalBoard: boards.length > 0,
+      boards,
       activeBoardId: null as string | null,
-      boardCount: 0,
+      usingDefaultBoard: true,
+      boardCount: boards.length,
       maxBoardsPerUser,
-      canCreateBoard: true,
+      canCreateBoard: boards.length < maxBoardsPerUser,
       pictogramCount: count ?? 0,
       hiddenCount: 0,
       customCount: 0,
@@ -342,6 +344,7 @@ export async function getBoardStatus(db: Db, userId: string) {
     hasPersonalBoard: boards.length > 0,
     boards,
     activeBoardId: activeBoard.id,
+    usingDefaultBoard: false,
     boardCount: boards.length,
     maxBoardsPerUser,
     canCreateBoard: boards.length < maxBoardsPerUser,

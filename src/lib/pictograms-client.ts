@@ -5,6 +5,7 @@ export interface BoardStatus {
   hasPersonalBoard: boolean;
   boards: UserBoard[];
   activeBoardId: string | null;
+  usingDefaultBoard?: boolean;
   boardCount: number;
   maxBoardsPerUser: number;
   canCreateBoard: boolean;

@@ -43,6 +43,7 @@ import {
 import { CategoryPicker } from "@/components/category-picker";
 import { OwnershipFilter } from "@/components/ownership-filter";
 import { BoardPicker } from "@/components/board-picker";
+import { DEFAULT_BOARD_ID } from "@/lib/board-constants";
 
 interface EditForm {
   name_es: string;
@@ -251,7 +252,8 @@ export function UserBoardManager() {
   };
 
   const handleSwitchBoard = async (boardId: string) => {
-    if (boardId === boardStatus?.activeBoardId) return;
+    const currentBoardId = boardStatus?.activeBoardId ?? DEFAULT_BOARD_ID;
+    if (boardId === currentBoardId) return;
     setSwitchingBoard(true);
     setError("");
     try {
@@ -334,29 +336,39 @@ export function UserBoardManager() {
         )}
       >
         <p className="font-semibold text-slate-800">
-          {boardStatus?.hasPersonalBoard ? t("personalActive") : t("usingDefault")}
+          {boardStatus?.usingDefaultBoard
+            ? t("usingDefault")
+            : boardStatus?.hasPersonalBoard
+              ? t("personalActive")
+              : t("usingDefault")}
         </p>
         <p className="mt-1 text-sm text-slate-600">
-          {boardStatus?.hasPersonalBoard ? t("personalHint") : t("defaultHint")}
+          {boardStatus?.usingDefaultBoard
+            ? t("defaultHint")
+            : boardStatus?.hasPersonalBoard
+              ? t("personalHint")
+              : t("defaultHint")}
         </p>
 
-        {(boardStatus?.hasPersonalBoard || boardStatus?.canCreateBoard) && (
+        {(boardStatus?.hasPersonalBoard ||
+          boardStatus?.canCreateBoard ||
+          boardStatus?.usingDefaultBoard) && (
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            {boardStatus?.boards.length ? (
-              <BoardPicker
-                id="boardSelect"
-                label={t("selectBoard")}
-                labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500"
-                boards={boardStatus.boards}
-                value={boardStatus.activeBoardId ?? ""}
-                onChange={handleSwitchBoard}
-                activeSuffix={t("activeBoard")}
-                disabled={switchingBoard}
-                loading={switchingBoard}
-                compact
-                className="min-w-[220px] flex-1 sm:max-w-sm"
-              />
-            ) : null}
+            <BoardPicker
+              id="boardSelect"
+              label={t("selectBoard")}
+              labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500"
+              boards={boardStatus?.boards ?? []}
+              value={boardStatus?.activeBoardId ?? DEFAULT_BOARD_ID}
+              onChange={handleSwitchBoard}
+              activeSuffix={t("activeBoard")}
+              defaultBoardLabel={t("defaultBoard")}
+              includeDefault
+              disabled={switchingBoard}
+              loading={switchingBoard}
+              compact
+              className="min-w-[220px] flex-1 sm:max-w-sm"
+            />
 
             <div className="flex flex-wrap items-center gap-2 mt-[20px]">
               {boardStatus?.canCreateBoard && (
@@ -412,7 +424,11 @@ export function UserBoardManager() {
               count: boardStatus.boardCount,
               max: boardStatus.maxBoardsPerUser,
             })}
-            {activeBoard ? ` · ${activeBoard.name}` : ""}
+            {boardStatus.usingDefaultBoard
+              ? ` · ${t("defaultBoard")}`
+              : activeBoard
+                ? ` · ${activeBoard.name}`
+                : ""}
           </p>
         )}
       </div>

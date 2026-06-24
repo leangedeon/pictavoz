@@ -5,28 +5,63 @@ import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import { PictogramCard } from "@/components/pictogram-card";
 import { SentenceBuilder, useAddToSentence } from "@/components/sentence-builder";
+import { BoardPicker } from "@/components/board-picker";
 import type { Category, Pictogram } from "@/types";
 import { cn } from "@/lib/utils";
-import { fetchCategories, fetchPictograms } from "@/lib/pictograms-client";
+import {
+  activateBoard,
+  fetchBoardStatus,
+  fetchCategories,
+  fetchPictograms,
+  type BoardStatus,
+} from "@/lib/pictograms-client";
+import { DEFAULT_BOARD_ID } from "@/lib/board-constants";
+
+function resolveBoardPickerValue(activeBoardId: string | null | undefined): string {
+  return activeBoardId ?? DEFAULT_BOARD_ID;
+}
 
 export function PictogramBrowser() {
   const tCommon = useTranslations("common");
+  const tBoard = useTranslations("board");
   const tCat = useTranslations("categories");
 
   const [categories, setCategories] = useState<Category[]>([]);
+  const [boardStatus, setBoardStatus] = useState<BoardStatus | null>(null);
   const [pictograms, setPictograms] = useState<Pictogram[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [switchingBoard, setSwitchingBoard] = useState(false);
   const addToSentence = useAddToSentence();
 
   const loadPictograms = useCallback(async (categoryId?: string | null, q?: string) => {
     setPictograms(await fetchPictograms(categoryId, q));
   }, []);
 
+  const handleSwitchBoard = async (boardId: string) => {
+    if (boardId === resolveBoardPickerValue(boardStatus?.activeBoardId)) return;
+
+    setSwitchingBoard(true);
+    try {
+      const status = await activateBoard(boardId);
+      if (status) {
+        setBoardStatus(status);
+        await loadPictograms(selectedCategory, search || undefined);
+      }
+    } finally {
+      setSwitchingBoard(false);
+    }
+  };
+
   useEffect(() => {
     async function init() {
-      const cats = await fetchCategories<Category>();
+      const [cats, status] = await Promise.all([
+        fetchCategories<Category>(),
+        fetchBoardStatus(),
+      ]);
+
+      setBoardStatus(status);
 
       if (cats.length > 0) {
         setCategories(cats);
@@ -83,6 +118,24 @@ export function PictogramBrowser() {
   return (
     <div className="space-y-6">
       <SentenceBuilder />
+
+      {boardStatus ? (
+        <BoardPicker
+          id="communicateBoardSelect"
+          label={tBoard("selectBoard")}
+          labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500"
+          boards={boardStatus.boards}
+          value={resolveBoardPickerValue(boardStatus.activeBoardId)}
+          onChange={handleSwitchBoard}
+          activeSuffix={tBoard("activeBoard")}
+          defaultBoardLabel={tBoard("defaultBoard")}
+          includeDefault
+          disabled={switchingBoard}
+          loading={switchingBoard}
+          compact
+          className="w-full sm:max-w-sm"
+        />
+      ) : null}
 
       <div className="relative">
         <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />

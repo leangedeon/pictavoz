@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, Loader2 } from "lucide-react";
+import { DEFAULT_BOARD_ID } from "@/lib/board-constants";
 import type { UserBoard } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +18,8 @@ interface BoardPickerProps {
   loading?: boolean;
   className?: string;
   compact?: boolean;
+  includeDefault?: boolean;
+  defaultBoardLabel?: string;
 }
 
 export function BoardPicker({
@@ -31,12 +34,17 @@ export function BoardPicker({
   loading = false,
   className,
   compact = false,
+  includeDefault = false,
+  defaultBoardLabel = "Default board",
 }: BoardPickerProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
+  const isDefaultSelected = value === DEFAULT_BOARD_ID;
   const selected = boards.find((board) => board.id === value);
-  const triggerLabel = selected?.name ?? "";
+  const triggerLabel = isDefaultSelected
+    ? defaultBoardLabel
+    : (selected?.name ?? defaultBoardLabel);
 
   useEffect(() => {
     if (!open) return;
@@ -110,6 +118,31 @@ export function BoardPicker({
           aria-labelledby={id}
           className="absolute z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border-2 border-indigo-100 bg-white p-2 shadow-xl"
         >
+          {includeDefault ? (
+            <li>
+              <button
+                type="button"
+                role="option"
+                aria-selected={isDefaultSelected}
+                onClick={() => {
+                  onChange(DEFAULT_BOARD_ID);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex w-full items-center justify-between gap-2 rounded-xl px-4 py-3.5 text-sm font-semibold transition-all active:scale-[0.99]",
+                  isDefaultSelected
+                    ? "bg-indigo-600 text-white shadow-sm"
+                    : "text-slate-700 hover:bg-indigo-50"
+                )}
+              >
+                <span className="truncate">{defaultBoardLabel}</span>
+                {isDefaultSelected ? (
+                  <Check className="h-4 w-4 shrink-0" />
+                ) : null}
+              </button>
+            </li>
+          ) : null}
+
           {boards.map((board) => {
             const isSelected = value === board.id;
 

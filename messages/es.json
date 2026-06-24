@@ -122,6 +122,7 @@
     "personalActive": "Tablero personal activo",
     "personalHint": "Los cambios solo te afectan a vos. Podés tener varios tableros y cambiar entre ellos.",
     "selectBoard": "Tablero activo",
+    "defaultBoard": "Tablero por defecto",
     "activeBoard": "activo",
     "newBoard": "Nuevo tablero",
     "newBoardPrompt": "Nombre del tablero (opcional)",
