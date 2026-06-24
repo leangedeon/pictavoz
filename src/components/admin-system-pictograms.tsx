@@ -34,7 +34,6 @@ export function AdminSystemPictograms() {
   const [preview, setPreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -129,30 +128,20 @@ export function AdminSystemPictograms() {
   };
 
   const handleDelete = async (pictogram: Pictogram) => {
-    const accepted = await confirm({
+    await confirm({
       title: t("delete"),
       message: t("deleteConfirm", { name: pictogram.name_es }),
       variant: "danger",
       confirmLabel: t("delete"),
+      onConfirm: async () => {
+        const res = await fetch(`/api/pictograms/${pictogram.id}`, {
+          method: "DELETE",
+        });
+        await parseJsonResponse(res, t("deleteError"));
+        closeEdit();
+        await loadPictograms();
+      },
     });
-    if (!accepted) return;
-
-    setDeleting(true);
-    setError("");
-
-    try {
-      const res = await fetch(`/api/pictograms/${pictogram.id}`, {
-        method: "DELETE",
-      });
-      await parseJsonResponse(res, t("deleteError"));
-
-      if (editing?.id === pictogram.id) closeEdit();
-      await loadPictograms();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("deleteError"));
-    } finally {
-      setDeleting(false);
-    }
   };
 
   return (
@@ -249,7 +238,7 @@ export function AdminSystemPictograms() {
                       <button
                         type="button"
                         onClick={() => handleDelete(pictogram)}
-                        disabled={deleting}
+                        disabled={saving}
                         className="rounded-xl bg-red-50 p-2 text-red-600 transition-colors hover:bg-red-100 disabled:opacity-50"
                         aria-label={t("delete")}
                       >
@@ -409,7 +398,7 @@ export function AdminSystemPictograms() {
               <button
                 type="button"
                 onClick={() => handleDelete(editing)}
-                disabled={deleting}
+                disabled={saving}
                 className="rounded-2xl border-2 border-red-200 px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
               >
                 {t("delete")}

@@ -13,7 +13,8 @@
   },
   "dialog": {
     "confirm": "Confirm",
-    "ok": "OK"
+    "ok": "OK",
+    "confirmError": "Could not complete the action. Please try again."
   },
   "nav": {
     "communicate": "Communicate",

@@ -40,6 +40,9 @@ import {
   consumePendingCategoryFilter,
   mergePendingPictogram,
 } from "@/lib/pictogram-pending";
+import { CategoryPicker } from "@/components/category-picker";
+import { OwnershipFilter } from "@/components/ownership-filter";
+import { BoardPicker } from "@/components/board-picker";
 
 interface EditForm {
   name_es: string;
@@ -216,21 +219,17 @@ export function UserBoardManager() {
   };
 
   const handleDeleteCustom = async (pictogram: Pictogram) => {
-    const accepted = await confirm({
+    await confirm({
       title: t("delete"),
       message: t("deleteConfirm", { name: pictogram.name_es }),
       variant: "danger",
       confirmLabel: t("delete"),
+      onConfirm: async () => {
+        await deletePictogram(pictogram.id);
+        closeEdit();
+        await loadAll();
+      },
     });
-    if (!accepted) return;
-    setError("");
-    try {
-      await deletePictogram(pictogram.id);
-      if (editing?.id === pictogram.id) closeEdit();
-      await loadAll();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("deleteError"));
-    }
   };
 
   const handleReset = async () => {
@@ -342,33 +341,24 @@ export function UserBoardManager() {
         </p>
 
         {(boardStatus?.hasPersonalBoard || boardStatus?.canCreateBoard) && (
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             {boardStatus?.boards.length ? (
-              <div className="min-w-[200px] flex-1">
-                <label
-                  htmlFor="boardSelect"
-                  className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500"
-                >
-                  {t("selectBoard")}
-                </label>
-                <select
-                  id="boardSelect"
-                  value={boardStatus.activeBoardId ?? ""}
-                  onChange={(e) => handleSwitchBoard(e.target.value)}
-                  disabled={switchingBoard}
-                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100 disabled:opacity-60"
-                >
-                  {boardStatus.boards.map((board) => (
-                    <option key={board.id} value={board.id}>
-                      {board.name}
-                      {board.is_active ? ` (${t("activeBoard")})` : ""}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <BoardPicker
+                id="boardSelect"
+                label={t("selectBoard")}
+                labelClassName="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                boards={boardStatus.boards}
+                value={boardStatus.activeBoardId ?? ""}
+                onChange={handleSwitchBoard}
+                activeSuffix={t("activeBoard")}
+                disabled={switchingBoard}
+                loading={switchingBoard}
+                compact
+                className="min-w-[220px] flex-1 sm:max-w-sm"
+              />
             ) : null}
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 mt-[20px]">
               {boardStatus?.canCreateBoard && (
                 <button
                   type="button"
@@ -433,39 +423,34 @@ export function UserBoardManager() {
         </p>
       )}
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <div className="relative min-w-[200px] flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
+        <div className="relative w-full sm:min-w-[220px] sm:max-w-md sm:flex-1">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={tCommon("search")}
-            className="w-full rounded-xl border-2 border-slate-200 py-2.5 pl-10 pr-4 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
+            className="h-12 w-full rounded-2xl border-2 border-slate-200 bg-white py-0 pl-11 pr-4 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
           />
         </div>
-        <select
+        <OwnershipFilter
           value={ownershipFilter}
-          onChange={(e) =>
-            setOwnershipFilter(e.target.value as "all" | "mine")
-          }
-          className="rounded-xl border-2 border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
-        >
-          <option value="all">{t("filterAll")}</option>
-          <option value="mine">{t("filterMine")}</option>
-        </select>
-        <select
+          onChange={setOwnershipFilter}
+          allLabel={t("filterAll")}
+          mineLabel={t("filterMine")}
+          className="w-full shrink-0 sm:w-auto"
+        />
+        <CategoryPicker
+          categories={categories}
           value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="rounded-xl border-2 border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
-        >
-          <option value="">{t("allCategories")}</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.icon} {categoryLabel(cat.slug)}
-            </option>
-          ))}
-        </select>
+          onChange={setCategoryFilter}
+          getCategoryLabel={categoryLabel}
+          allowEmpty
+          emptyLabel={t("allCategories")}
+          compact
+          className="w-full shrink-0 sm:w-auto sm:min-w-[220px] sm:max-w-xs"
+        />
       </div>
 
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8">
@@ -594,24 +579,15 @@ export function UserBoardManager() {
                   className="w-full rounded-xl border-2 border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
                 />
               </div>
-              <div>
-                <label className="mb-1 block text-sm font-semibold text-slate-700">
-                  {t("category")}
-                </label>
-                <select
-                  value={form.category_id}
-                  onChange={(e) =>
-                    setForm({ ...form, category_id: e.target.value })
-                  }
-                  className="w-full rounded-xl border-2 border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
-                >
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.icon} {categoryLabel(cat.slug)}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <CategoryPicker
+                label={t("category")}
+                categories={categories}
+                value={form.category_id}
+                onChange={(category_id) =>
+                  setForm({ ...form, category_id })
+                }
+                getCategoryLabel={categoryLabel}
+              />
             </div>
 
             {error && (

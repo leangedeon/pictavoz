@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { useTranslations } from "next-intl";
-import { AlertTriangle, HelpCircle, Info } from "lucide-react";
+import { AlertTriangle, HelpCircle, Info, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type DialogVariant = "default" | "danger";
@@ -21,6 +21,8 @@ interface ConfirmOptions {
   confirmLabel?: string;
   cancelLabel?: string;
   variant?: DialogVariant;
+  /** When set, the dialog stays open with a loader until this promise settles. */
+  onConfirm?: () => Promise<void>;
 }
 
 interface PromptOptions {
@@ -77,12 +79,14 @@ function DialogShell({
   message,
   icon,
   onClose,
+  locked = false,
   children,
 }: {
   title?: string;
   message: string;
   icon: ReactNode;
   onClose: () => void;
+  locked?: boolean;
   children: ReactNode;
 }) {
   const descriptionId = message ? "app-dialog-message" : undefined;
@@ -91,7 +95,7 @@ function DialogShell({
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4"
       role="presentation"
-      onClick={onClose}
+      onClick={locked ? undefined : onClose}
     >
       <div
         role="dialog"
@@ -130,6 +134,114 @@ function DialogShell({
         {children}
       </div>
     </div>
+  );
+}
+
+function ConfirmDialogView({
+  options,
+  resolve,
+  onDismiss,
+}: {
+  options: ConfirmOptions;
+  resolve: (value: boolean) => void;
+  onDismiss: () => void;
+}) {
+  const t = useTranslations("dialog");
+  const tCommon = useTranslations("common");
+  const isDanger = options.variant === "danger";
+  const [confirming, setConfirming] = useState(false);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
+
+  const dismissConfirm = () => {
+    if (confirming) return;
+    resolve(false);
+    onDismiss();
+  };
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !confirming) {
+        resolve(false);
+        onDismiss();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [confirming, onDismiss, resolve]);
+
+  const handleConfirm = async () => {
+    if (!options.onConfirm) {
+      resolve(true);
+      onDismiss();
+      return;
+    }
+
+    setConfirming(true);
+    setConfirmError(null);
+    try {
+      await options.onConfirm();
+      resolve(true);
+      onDismiss();
+    } catch (err) {
+      setConfirmError(err instanceof Error ? err.message : t("confirmError"));
+      setConfirming(false);
+    }
+  };
+
+  return (
+    <DialogShell
+      title={options.title}
+      message={options.message}
+      icon={
+        isDanger ? (
+          <AlertTriangle className="h-5 w-5 text-red-600" />
+        ) : (
+          <HelpCircle className="h-5 w-5 text-indigo-600" />
+        )
+      }
+      locked={confirming}
+      onClose={dismissConfirm}
+    >
+      <div className="space-y-3">
+        {confirmError ? (
+          <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-600">
+            {confirmError}
+          </p>
+        ) : null}
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            autoFocus={!isDanger && !confirming}
+            disabled={confirming}
+            onClick={dismissConfirm}
+            className="rounded-2xl border-2 border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {options.cancelLabel ?? tCommon("cancel")}
+          </button>
+          <button
+            type="button"
+            autoFocus={isDanger && !confirming}
+            disabled={confirming}
+            onClick={() => void handleConfirm()}
+            className={cn(
+              "flex items-center justify-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-70",
+              isDanger
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            )}
+          >
+            {confirming ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {tCommon("loading")}
+              </>
+            ) : (
+              options.confirmLabel ?? t("confirm")
+            )}
+          </button>
+        </div>
+      </div>
+    </DialogShell>
   );
 }
 
@@ -260,54 +372,13 @@ function ActiveDialogView({
   }
 
   const { options, resolve } = dialog;
-  const isDanger = options.variant === "danger";
 
   return (
-    <DialogShell
-      title={options.title}
-      message={options.message}
-      icon={
-        isDanger ? (
-          <AlertTriangle className="h-5 w-5 text-red-600" />
-        ) : (
-          <HelpCircle className="h-5 w-5 text-indigo-600" />
-        )
-      }
-      onClose={() => {
-        resolve(false);
-        onDismiss();
-      }}
-    >
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <button
-          type="button"
-          autoFocus={!isDanger}
-          onClick={() => {
-            resolve(false);
-            onDismiss();
-          }}
-          className="rounded-2xl border-2 border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50"
-        >
-          {options.cancelLabel ?? tCommon("cancel")}
-        </button>
-        <button
-          type="button"
-          autoFocus={isDanger}
-          onClick={() => {
-            resolve(true);
-            onDismiss();
-          }}
-          className={cn(
-            "rounded-2xl px-5 py-2.5 text-sm font-bold text-white",
-            isDanger
-              ? "bg-red-600 hover:bg-red-700"
-              : "bg-indigo-600 hover:bg-indigo-700"
-          )}
-        >
-          {options.confirmLabel ?? t("confirm")}
-        </button>
-      </div>
-    </DialogShell>
+    <ConfirmDialogView
+      options={options}
+      resolve={resolve}
+      onDismiss={onDismiss}
+    />
   );
 }
 

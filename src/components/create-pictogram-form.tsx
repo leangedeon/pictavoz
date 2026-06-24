@@ -8,6 +8,7 @@ import { useLocale } from "next-intl";
 import type { Category, Pictogram } from "@/types";
 import { parseJsonResponse } from "@/lib/api-client";
 import { stashCreatedPictogram } from "@/lib/pictogram-pending";
+import { CategoryPicker } from "@/components/category-picker";
 
 const IMAGE_ACCEPT =
   "image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.gif,.heic,.heif";
@@ -25,7 +26,8 @@ export function CreatePictogramForm() {
   const [categoryId, setCategoryId] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -34,7 +36,8 @@ export function CreatePictogramForm() {
       .then((data: Category[]) => {
         setCategories(data);
         if (data.length > 0) setCategoryId(data[0].id);
-      });
+      })
+      .finally(() => setPageLoading(false));
   }, []);
 
   const categoryLabel = (slug: string) => {
@@ -58,7 +61,7 @@ export function CreatePictogramForm() {
       return;
     }
 
-    setLoading(true);
+    setSaving(true);
     setError("");
 
     const formData = new FormData();
@@ -76,9 +79,17 @@ export function CreatePictogramForm() {
     } catch (err) {
       setError(err instanceof Error ? err.message : t("fillAllFields"));
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
+
+  if (pageLoading) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} noValidate className="mx-auto max-w-lg space-y-6">
@@ -153,26 +164,14 @@ export function CreatePictogramForm() {
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="category"
-              className="mb-1.5 block text-sm font-semibold text-slate-700"
-            >
-              {t("categoryLabel")}
-            </label>
-            <select
-              id="category"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full rounded-xl border-2 border-slate-200 px-4 py-3 text-base focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
-            >
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.icon} {categoryLabel(cat.slug)}
-                </option>
-              ))}
-            </select>
-          </div>
+          <CategoryPicker
+            id="category"
+            label={t("categoryLabel")}
+            categories={categories}
+            value={categoryId}
+            onChange={setCategoryId}
+            getCategoryLabel={categoryLabel}
+          />
         </div>
 
         {error && (
@@ -185,10 +184,10 @@ export function CreatePictogramForm() {
 
         <button
           type="submit"
-          disabled={loading || !file || !name.trim()}
+          disabled={saving || !file || !name.trim()}
           className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 py-4 text-base font-bold text-white shadow-lg transition-all hover:bg-indigo-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {loading ? (
+          {saving ? (
             <>
               <Loader2 className="h-5 w-5 animate-spin" />
               {t("saving")}
