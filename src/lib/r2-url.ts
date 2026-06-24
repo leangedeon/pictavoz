@@ -1,6 +1,13 @@
 function getPublicUrlConfig() {
   const bucket = process.env.R2_BUCKET_NAME;
-  const publicUrl = process.env.R2_PUBLIC_URL?.replace(/\/$/, "");
+  let publicUrl = process.env.R2_PUBLIC_URL?.replace(/\/$/, "");
+
+  // R2_PUBLIC_URL must be the bucket root (e.g. https://pub-xxx.r2.dev).
+  // Strip a trailing /{bucket} if it was copied from the S3 endpoint by mistake.
+  if (bucket && publicUrl?.endsWith(`/${bucket}`)) {
+    publicUrl = publicUrl.slice(0, -(bucket.length + 1));
+  }
+
   return { bucket, publicUrl };
 }
 
@@ -16,11 +23,16 @@ export function buildPublicObjectUrl(key: string): string {
     .map((segment) => encodeURIComponent(segment))
     .join("/");
 
-  if (publicUrl.endsWith(`/${bucket}`)) {
-    return `${publicUrl}/${encodedKey}`;
-  }
+  // Public R2 URLs (r2.dev or custom domain) are already scoped to one bucket.
+  // Object keys live at the URL root — do not prefix the bucket name in the path.
+  return `${publicUrl}/${encodedKey}`;
+}
 
-  return `${publicUrl}/${bucket}/${encodedKey}`;
+function stripBucketFromPublicPath(path: string, bucket: string | undefined): string {
+  if (bucket && path.startsWith(`${bucket}/`)) {
+    return path.slice(bucket.length + 1);
+  }
+  return path;
 }
 
 export function normalizeR2PublicUrl(
@@ -33,13 +45,11 @@ export function normalizeR2PublicUrl(
     return url;
   }
 
-  const path = url.slice(publicUrl.length).replace(/^\//, "");
-  if (path.startsWith(`${bucket}/`)) {
-    return url;
-  }
+  let path = url.slice(publicUrl.length).replace(/^\//, "");
+  path = stripBucketFromPublicPath(path, bucket);
 
   if (path.startsWith("pictograms/")) {
-    return `${publicUrl}/${bucket}/${path}`;
+    return `${publicUrl}/${path}`;
   }
 
   return url;
@@ -59,9 +69,7 @@ export function extractR2ObjectKey(
   }
 
   let path = normalized.slice(publicUrl.length).replace(/^\//, "");
-  if (bucket && path.startsWith(`${bucket}/`)) {
-    path = path.slice(bucket.length + 1);
-  }
+  path = stripBucketFromPublicPath(path, bucket);
 
   try {
     path = decodeURIComponent(path);
