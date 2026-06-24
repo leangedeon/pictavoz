@@ -10,6 +10,7 @@ import {
   sortPictogramsByLabel,
 } from "@/lib/pictograms-db";
 import { getActiveBoard } from "@/lib/user-board";
+import { deleteOrphanR2Images } from "@/lib/r2-cleanup";
 
 export async function GET(request: NextRequest) {
   const session = await getSession();
@@ -82,7 +83,7 @@ export async function DELETE(request: NextRequest) {
   const db = getDb();
   const { data: pictogram } = await db
     .from(TABLES.pictograms)
-    .select("user_id, is_system, source_system_id")
+    .select("user_id, is_system, source_system_id, image_url")
     .eq("id", id)
     .single();
 
@@ -112,11 +113,15 @@ export async function DELETE(request: NextRequest) {
     );
   }
 
+  const imageUrl = pictogram.image_url;
+
   const { error } = await db.from(TABLES.pictograms).delete().eq("id", id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  await deleteOrphanR2Images(db, [imageUrl], [id]);
 
   return NextResponse.json({ success: true });
 }

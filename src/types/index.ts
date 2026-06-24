@@ -41,6 +41,7 @@ export interface Pictogram {
   is_system: boolean;
   source_system_id?: string | null;
   is_hidden?: boolean;
+  is_user_modified?: boolean;
   created_at: string;
   category?: Category;
 }

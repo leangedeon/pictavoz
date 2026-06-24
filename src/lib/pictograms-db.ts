@@ -1,4 +1,5 @@
 import { translatePictogramToEn } from "@/data/pictogram-translations-en";
+import { normalizeR2PublicUrl } from "@/lib/r2-url";
 import type { Pictogram } from "@/types";
 
 type PictogramRow = Record<string, unknown> & Partial<Pictogram>;
@@ -56,6 +57,9 @@ export function normalizePictogramRow(row: PictogramRow): Pictogram {
     ...(row as Pictogram),
     name_es,
     name_en,
+    image_url: normalizeR2PublicUrl(
+      typeof row.image_url === "string" ? row.image_url : null
+    ),
   };
 }
 
@@ -72,6 +76,21 @@ export function filterPictogramsBySearch(
       p.name_en.toLowerCase().includes(q) ||
       (p.name?.toLowerCase().includes(q) ?? false)
   );
+}
+
+export function filterPictogramsByOwnership(
+  pictograms: Pictogram[],
+  ownership: "all" | "mine"
+): Pictogram[] {
+  if (ownership !== "mine") return pictograms;
+
+  return pictograms.filter(
+    (p) => !p.source_system_id || p.is_user_modified === true
+  );
+}
+
+export function isUserOwnedPictogram(pictogram: Pictogram): boolean {
+  return !pictogram.source_system_id || pictogram.is_user_modified === true;
 }
 
 export function sortPictogramsByLabel(pictograms: Pictogram[]): Pictogram[] {

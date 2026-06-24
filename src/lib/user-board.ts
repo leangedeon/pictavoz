@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { TABLES } from "@/lib/db-tables";
 import { getMaxBoardsPerUser } from "@/lib/app-settings";
+import { deleteBoardR2Images } from "@/lib/r2-cleanup";
 
 type Db = ReturnType<typeof getDb>;
 
@@ -254,6 +255,8 @@ export async function resetBoard(
   if (!board) {
     throw new Error("Board not found");
   }
+
+  await deleteBoardR2Images(db, boardId);
 
   const { error: deletePicsError } = await db
     .from(TABLES.pictograms)

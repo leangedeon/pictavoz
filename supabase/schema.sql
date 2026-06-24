@@ -54,6 +54,7 @@ CREATE TABLE pic_pictograms (
   is_system BOOLEAN NOT NULL DEFAULT false,
   source_system_id UUID REFERENCES pic_pictograms(id) ON DELETE SET NULL,
   is_hidden BOOLEAN NOT NULL DEFAULT false,
+  is_user_modified BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

@@ -132,6 +132,8 @@
     "resetConfirm": "Delete the active board? Its changes and custom pictograms will be lost.",
     "resetError": "Could not reset board",
     "allCategories": "All categories",
+    "filterAll": "All pictograms",
+    "filterMine": "Created or modified by me",
     "hiddenSection": "Hidden ({count})",
     "editTitle": "Edit pictogram",
     "edit": "Edit",

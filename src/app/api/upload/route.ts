@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
         is_system: false,
         source_system_id: null,
         is_hidden: false,
+        is_user_modified: true,
       })
       .select("*, category:pic_categories(*)")
       .single();

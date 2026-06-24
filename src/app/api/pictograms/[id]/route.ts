@@ -10,6 +10,7 @@ import {
   ensurePersonalBoard,
   resolveUserPictogramId,
 } from "@/lib/user-board";
+import { deleteOrphanR2Images } from "@/lib/r2-cleanup";
 
 async function getPictogramForUpdate(id: string) {
   const db = getDb();
@@ -175,6 +176,16 @@ export async function PATCH(
     updates.image_url = await optimizeAndUploadImage(buffer, imageFile.name);
   }
 
+  if (!canAdminManageSystem(pictogram, session)) {
+    updates.is_user_modified = true;
+  }
+
+  const { data: beforeUpdate } = await db
+    .from(TABLES.pictograms)
+    .select("image_url")
+    .eq("id", targetId)
+    .maybeSingle();
+
   const { data, error } = await db
     .from(TABLES.pictograms)
     .update(updates)
@@ -184,6 +195,10 @@ export async function PATCH(
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  if (beforeUpdate?.image_url && beforeUpdate.image_url !== data.image_url) {
+    await deleteOrphanR2Images(db, [beforeUpdate.image_url], [targetId]);
   }
 
   return NextResponse.json(
@@ -230,11 +245,15 @@ export async function DELETE(
   }
 
   const db = getDb();
+  const imageUrl = pictogram.image_url;
+
   const { error } = await db.from(TABLES.pictograms).delete().eq("id", id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  await deleteOrphanR2Images(db, [imageUrl], [id]);
 
   return NextResponse.json({ success: true });
 }

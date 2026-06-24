@@ -132,6 +132,8 @@
     "resetConfirm": "¿Eliminar el tablero activo? Se perderán sus cambios y pictogramas personalizados.",
     "resetError": "No se pudo restablecer el tablero",
     "allCategories": "Todas las categorías",
+    "filterAll": "Todos los pictogramas",
+    "filterMine": "Creados o modificados por mí",
     "hiddenSection": "Ocultos ({count})",
     "editTitle": "Editar pictograma",
     "edit": "Editar",

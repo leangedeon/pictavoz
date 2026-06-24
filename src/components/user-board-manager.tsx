@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Check,
@@ -31,6 +31,11 @@ import {
   type BoardStatus,
 } from "@/lib/pictograms-client";
 import { useAppDialog } from "@/components/app-dialog-provider";
+import {
+  filterPictogramsByOwnership,
+  filterPictogramsBySearch,
+  sortPictogramsByLabel,
+} from "@/lib/pictograms-db";
 
 interface EditForm {
   name_es: string;
@@ -49,10 +54,11 @@ export function UserBoardManager() {
 
   const [boardStatus, setBoardStatus] = useState<BoardStatus | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [pictograms, setPictograms] = useState<Pictogram[]>([]);
+  const [allPictograms, setAllPictograms] = useState<Pictogram[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [ownershipFilter, setOwnershipFilter] = useState<"all" | "mine">("all");
   const [editing, setEditing] = useState<Pictogram | null>(null);
   const [form, setForm] = useState<EditForm | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -77,15 +83,22 @@ export function UserBoardManager() {
     const [status, cats, all] = await Promise.all([
       fetchBoardStatus(),
       fetchCategories<Category>(),
-      fetchPictograms(categoryFilter || null, search || undefined, {
-        includeHidden: true,
-      }),
+      fetchPictograms(null, undefined, { includeHidden: true }),
     ]);
 
     setBoardStatus(status);
     setCategories(cats);
-    setPictograms(all);
-  }, [categoryFilter, search]);
+    setAllPictograms(all);
+  }, []);
+
+  const pictograms = useMemo(() => {
+    let result = allPictograms;
+    if (categoryFilter) {
+      result = result.filter((p) => p.category_id === categoryFilter);
+    }
+    result = filterPictogramsByOwnership(result, ownershipFilter);
+    return sortPictogramsByLabel(filterPictogramsBySearch(result, search));
+  }, [allPictograms, categoryFilter, ownershipFilter, search]);
 
   useEffect(() => {
     setLoading(true);
@@ -157,7 +170,7 @@ export function UserBoardManager() {
     setError("");
     try {
       const updated = await updatePictogram(pictogram.id, { is_hidden: true });
-      setPictograms((prev) =>
+      setAllPictograms((prev) =>
         prev.map((p) => (p.id === updated.id ? updated : p))
       );
       setEditing((current) =>
@@ -177,7 +190,7 @@ export function UserBoardManager() {
     setError("");
     try {
       const updated = await updatePictogram(pictogram.id, { is_hidden: false });
-      setPictograms((prev) =>
+      setAllPictograms((prev) =>
         prev.map((p) => (p.id === updated.id ? updated : p))
       );
       setEditing((current) =>
@@ -410,8 +423,8 @@ export function UserBoardManager() {
         </p>
       )}
 
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="relative flex-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <div className="relative min-w-[200px] flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             type="search"
@@ -421,6 +434,16 @@ export function UserBoardManager() {
             className="w-full rounded-xl border-2 border-slate-200 py-2.5 pl-10 pr-4 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
           />
         </div>
+        <select
+          value={ownershipFilter}
+          onChange={(e) =>
+            setOwnershipFilter(e.target.value as "all" | "mine")
+          }
+          className="rounded-xl border-2 border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
+        >
+          <option value="all">{t("filterAll")}</option>
+          <option value="mine">{t("filterMine")}</option>
+        </select>
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
