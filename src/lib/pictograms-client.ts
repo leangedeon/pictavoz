@@ -1,4 +1,5 @@
 import type { Pictogram, UserBoard } from "@/types";
+import { parseJsonResponse } from "@/lib/api-client";
 
 export interface BoardStatus {
   hasPersonalBoard: boolean;
@@ -24,7 +25,7 @@ export async function fetchPictograms(
   if (options?.systemOnly) params.set("system_only", "true");
   if (options?.includeHidden) params.set("include_hidden", "true");
 
-  const res = await fetch(`/api/pictograms?${params}`);
+  const res = await fetch(`/api/pictograms?${params}`, { cache: "no-store" });
   const data: unknown = await res.json();
 
   if (!res.ok || !Array.isArray(data)) {
@@ -48,7 +49,7 @@ export async function fetchCategories<T>(): Promise<T[]> {
 }
 
 export async function fetchBoardStatus(): Promise<BoardStatus | null> {
-  const res = await fetch("/api/board");
+  const res = await fetch("/api/board", { cache: "no-store" });
   if (!res.ok) return null;
   return res.json();
 }
@@ -108,9 +109,7 @@ export async function updatePictogram(
     headers: isFormData ? undefined : { "Content-Type": "application/json" },
     body: isFormData ? payload : JSON.stringify(payload),
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error ?? "Update failed");
-  return data as Pictogram;
+  return parseJsonResponse<Pictogram>(res, "Update failed");
 }
 
 export async function deletePictogram(id: string): Promise<void> {

@@ -5,7 +5,12 @@ import { useTranslations } from "next-intl";
 import { Camera, Upload, Loader2 } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import type { Category } from "@/types";
+import type { Category, Pictogram } from "@/types";
+import { parseJsonResponse } from "@/lib/api-client";
+import { stashCreatedPictogram } from "@/lib/pictogram-pending";
+
+const IMAGE_ACCEPT =
+  "image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.gif,.heic,.heif";
 
 export function CreatePictogramForm() {
   const t = useTranslations("create");
@@ -64,9 +69,10 @@ export function CreatePictogramForm() {
 
     try {
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Error");
+      const created = await parseJsonResponse<Pictogram>(res, t("fillAllFields"));
+      stashCreatedPictogram(created, categoryId);
       router.push("/pictogramas");
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("fillAllFields"));
     } finally {
@@ -75,7 +81,7 @@ export function CreatePictogramForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-lg space-y-6">
+    <form onSubmit={handleSubmit} noValidate className="mx-auto max-w-lg space-y-6">
       <div className="rounded-3xl border-2 border-indigo-100 bg-white p-6 shadow-lg">
         <h2 className="mb-6 text-xl font-bold text-slate-800">{t("formTitle")}</h2>
 
@@ -116,7 +122,7 @@ export function CreatePictogramForm() {
         <input
           ref={cameraInputRef}
           type="file"
-          accept="image/*"
+          accept={IMAGE_ACCEPT}
           capture="environment"
           className="hidden"
           onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
@@ -124,7 +130,7 @@ export function CreatePictogramForm() {
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept={IMAGE_ACCEPT}
           className="hidden"
           onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
         />

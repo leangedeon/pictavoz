@@ -14,9 +14,15 @@ export function normalizePictogramNameKey(
     .replace(/\p{M}/gu, "");
 }
 
+function pictogramDedupePriority(pictogram: Pictogram): number {
+  if (!pictogram.source_system_id) return 3;
+  if (pictogram.is_user_modified) return 2;
+  return 1;
+}
+
 export function dedupePictograms(pictograms: Pictogram[]): Pictogram[] {
   const seenIds = new Set<string>();
-  const seenCategoryNames = new Set<string>();
+  const bestByCategoryName = new Map<string, Pictogram>();
   const result: Pictogram[] = [];
 
   for (const pictogram of pictograms) {
@@ -32,11 +38,26 @@ export function dedupePictograms(pictograms: Pictogram[]): Pictogram[] {
     }
 
     const categoryKey = `${pictogram.category_id}:${nameKey}`;
-    if (seenCategoryNames.has(categoryKey)) continue;
+    const existing = bestByCategoryName.get(categoryKey);
 
+    if (!existing) {
+      bestByCategoryName.set(categoryKey, pictogram);
+      seenIds.add(pictogram.id);
+      result.push(pictogram);
+      continue;
+    }
+
+    if (pictogramDedupePriority(pictogram) <= pictogramDedupePriority(existing)) {
+      continue;
+    }
+
+    const index = result.findIndex((item) => item.id === existing.id);
+    if (index >= 0) {
+      result[index] = pictogram;
+    }
+    seenIds.delete(existing.id);
     seenIds.add(pictogram.id);
-    seenCategoryNames.add(categoryKey);
-    result.push(pictogram);
+    bestByCategoryName.set(categoryKey, pictogram);
   }
 
   return result;

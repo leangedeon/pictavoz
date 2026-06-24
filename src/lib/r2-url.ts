@@ -11,12 +11,16 @@ export function buildPublicObjectUrl(key: string): string {
   }
 
   const normalizedKey = key.replace(/^\//, "");
+  const encodedKey = normalizedKey
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
 
   if (publicUrl.endsWith(`/${bucket}`)) {
-    return `${publicUrl}/${normalizedKey}`;
+    return `${publicUrl}/${encodedKey}`;
   }
 
-  return `${publicUrl}/${bucket}/${normalizedKey}`;
+  return `${publicUrl}/${bucket}/${encodedKey}`;
 }
 
 export function normalizeR2PublicUrl(
@@ -57,6 +61,12 @@ export function extractR2ObjectKey(
   let path = normalized.slice(publicUrl.length).replace(/^\//, "");
   if (bucket && path.startsWith(`${bucket}/`)) {
     path = path.slice(bucket.length + 1);
+  }
+
+  try {
+    path = decodeURIComponent(path);
+  } catch {
+    // keep raw path if not percent-encoded
   }
 
   if (!path.startsWith("pictograms/")) {

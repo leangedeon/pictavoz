@@ -8,6 +8,7 @@ import type { Category, Pictogram } from "@/types";
 import { cn } from "@/lib/utils";
 import { fetchCategories, fetchPictograms } from "@/lib/pictograms-client";
 import { useAppDialog } from "@/components/app-dialog-provider";
+import { parseJsonResponse } from "@/lib/api-client";
 
 interface EditForm {
   name_es: string;
@@ -116,8 +117,7 @@ export function AdminSystemPictograms() {
         method: "PATCH",
         body,
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? t("updateError"));
+      await parseJsonResponse(res, t("updateError"));
 
       await loadPictograms();
       closeEdit();
@@ -144,8 +144,7 @@ export function AdminSystemPictograms() {
       const res = await fetch(`/api/pictograms/${pictogram.id}`, {
         method: "DELETE",
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? t("deleteError"));
+      await parseJsonResponse(res, t("deleteError"));
 
       if (editing?.id === pictogram.id) closeEdit();
       await loadPictograms();
@@ -322,7 +321,7 @@ export function AdminSystemPictograms() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.gif,.heic,.heif"
                 className="hidden"
                 onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
               />

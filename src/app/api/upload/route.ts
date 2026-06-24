@@ -58,7 +58,10 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      const message = error.message.includes("is_user_modified")
+        ? "Falta la columna is_user_modified en la base de datos. Ejecuta supabase/migration-user-modified.sql en Supabase."
+        : error.message;
+      return NextResponse.json({ error: message }, { status: 500 });
     }
 
     return NextResponse.json(

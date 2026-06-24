@@ -36,6 +36,10 @@ import {
   filterPictogramsBySearch,
   sortPictogramsByLabel,
 } from "@/lib/pictograms-db";
+import {
+  consumePendingCategoryFilter,
+  mergePendingPictogram,
+} from "@/lib/pictogram-pending";
 
 interface EditForm {
   name_es: string;
@@ -88,7 +92,13 @@ export function UserBoardManager() {
 
     setBoardStatus(status);
     setCategories(cats);
-    setAllPictograms(all);
+    setAllPictograms(mergePendingPictogram(all));
+
+    const pendingCategory = consumePendingCategoryFilter();
+    if (pendingCategory && cats.some((cat) => cat.id === pendingCategory)) {
+      setCategoryFilter(pendingCategory);
+      setSearch("");
+    }
   }, []);
 
   const pictograms = useMemo(() => {
@@ -538,7 +548,7 @@ export function UserBoardManager() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.gif,.heic,.heif"
                 className="hidden"
                 onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
               />
