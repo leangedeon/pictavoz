@@ -135,7 +135,7 @@
     "resetError": "No se pudo restablecer el tablero",
     "allCategories": "Todas las categorías",
     "filterAll": "Todos los pictogramas",
-    "filterMine": "Creados o modificados por mí",
+    "filterMine": "Modificados por mí",
     "hiddenSection": "Ocultos ({count})",
     "editTitle": "Editar pictograma",
     "edit": "Editar",
