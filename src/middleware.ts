@@ -27,7 +27,13 @@ function isLandingPath(pathWithoutLocale: string): boolean {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/api")) {
+  if (
+    pathname.startsWith("/api") ||
+    pathname === "/favicon.ico" ||
+    pathname === "/icon.png" ||
+    pathname === "/apple-icon.png" ||
+    pathname === "/manifest.json"
+  ) {
     return NextResponse.next();
   }
 

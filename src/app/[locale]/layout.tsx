@@ -18,10 +18,6 @@ export const metadata = {
   description:
     "Armá oraciones con pictogramas, personalizá tableros y comunicate con voz. Gratis en español e inglés.",
   manifest: "/manifest.json",
-  icons: {
-    icon: [{ url: "/icon.png", type: "image/png" }],
-    apple: [{ url: "/icon.png", type: "image/png" }],
-  },
 };
 
 export const viewport: Viewport = {
